@@ -1,0 +1,28 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    cloudflared_argo_provision_enabled: true
+    cloudflare_origin_ca_key: "{{ lookup('env', 'CLOUDFLARE_ORIGIN_CA_KEY') }}"
+    cloudflare_auth_key: "{{ lookup('env', 'CLOUDFLARE_AUTH_KEY') }}"
+    cloudflare_auth_email: "{{ lookup('env', 'CLOUDFLARE_AUTH_EMAIL') }}"
+    cloudflare_zone_id: "{{ lookup('env', 'CLOUDFLARE_ZONE_ID') }}"
+    cloudflared_tunnels:
+      - tunnel_name: cloudflaredtest
+        tunnel_hostname: cloudflaredtest.keanu.im
+        tunnel_upstream: 127.0.0.1:80
+  pre_tasks:
+    - name: Update apt cache.
+      apt:
+        update_cache: true
+        cache_valid_time: 600
+    - name: install dummy http server
+      apt:
+        name: nginx
+    - name: start dummy http server
+      service:
+        name: nginx
+        state: started
+  roles:
+    - role: ansible-cloudflared

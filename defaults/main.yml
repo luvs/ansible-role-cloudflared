@@ -1,0 +1,23 @@
+---
+# @var cloudflared_base_url: "https://bin.equinox.io/c/VdrWdbjqyF/" # upstream url to download cloudflared from
+cloudflared_base_url: "https://bin.equinox.io/c/VdrWdbjqyF/"
+# @var cloudflared_amd64_apt: "cloudflared-stable-linux-amd64.deb" # the name of the deb package to install
+cloudflared_amd64_apt: "cloudflared-stable-linux-amd64.deb"
+# @var cloudflared_bin_location: /usr/local/bin # the location the cloudflared binary will be placed
+cloudflared_bin_location: /usr/local/bin
+# @var cloudflared_enable_service: true # whether the cloudflared argo tunnel service will be started
+cloudflared_enable_service: true
+# @var cloudflared_tunnels: [] # the tunnels to create
+cloudflared_tunnels: []
+# @example #
+# cloudflared_tunnels:
+#   - tunnel_name: foo
+#     tunnel_hostname: yourapp.foo.com
+#     tunnel_upstream: 127.0.0.1:8001
+# @end
+# @var cloudflared_argo_provision_enabled: false # Whether to provision the argo cert automatically
+cloudflared_argo_provision_enabled: false
+# @var cloudflare_origin_ca_key: undefined # Used to provision the argo tunnel cert.
+# @var cloudflare_auth_key: undefined # Used to provision the argo tunnel cert.
+# @var cloudflare_auth_email: undefined # Used to provision the argo tunnel cert.
+# @var cloudflare_zone_id: undefined # Used to provision the argo tunnel cert.

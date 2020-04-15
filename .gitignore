@@ -1,0 +1,7 @@
+*.retry
+*/__pycache__
+*.pyc
+.build-harness
+build-harness
+env
+.env

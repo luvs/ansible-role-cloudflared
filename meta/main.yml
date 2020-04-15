@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  author: Abel Luck
+  description: This ansible role installs cloudflared and configures for use with argo tunnel.
+  company: The Guardian Project
+  license: AGPL-3.0-or-later
+  min_ansible_version: 2.9
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+dependencies: []

@@ -1,0 +1,25 @@
+---
+image: registry.gitlab.com/guardianproject-ops/docker-docker-molecule:latest
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+
+services:
+  - docker:dind
+
+stages:
+  - test
+
+.molecule: &molecule
+  script:
+    - docker version
+    - python3 -V
+    - ansible --version
+    - molecule --version
+    - molecule test
+
+molecule_debian10:
+  stage: test
+  <<: *molecule
+  variables:
+    MOLECULE_DISTRO: debian10

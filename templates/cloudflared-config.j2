@@ -1,0 +1,4 @@
+hostname: "{{ item.tunnel_hostname }}"
+url: http://{{ item.tunnel_upstream }}
+logfile: /var/log/cloudflared/{{ item.tunnel_name }}.log
+origincert: /etc/cloudflared/{{ item.tunnel_name }}.pem

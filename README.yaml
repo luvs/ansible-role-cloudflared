@@ -1,0 +1,73 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: ansible-cloudflared
+
+# License of this project
+license: "AGPL3"
+
+# Canonical GitLab repo
+gitlab_repo: guardianproject-ops/ansible-cloudflared
+
+# Badges to display
+badges: []
+
+# Short description of this project
+description: |-
+  This ansible role installs cloudflared and configures for use with argo tunnel.
+
+requirements: |-
+  This role only supports Debian hosts.
+
+# How to use this project
+usage: |-
+
+  ### When provisioning the argo cert manually
+
+  You'll have to login to the server, do a `cloudflared login` and copy the
+  resulting cert into position in `/etc/cloudflared/app.cert`
+
+  ```yaml
+  - hosts: servers
+    vars:
+      cloudflared_tunnels:
+        - tunnel_name: app
+          tunnel_hostname: app.example.com
+          tunnel_upstream: 127.0.0.1:80
+    roles:
+      - ansible-cloudflared
+  ```
+
+  ### When provisioning the argo cert automatically:
+
+  This automatically provisions the cert but requires root creds :yikes:
+
+  ```yaml
+  - hosts: servers
+    vars:
+      cloudflare_origin_ca_key: "{{ lookup('env', 'CLOUDFLARE_ORIGIN_CA_KEY') }}"
+      cloudflare_auth_key: "{{ lookup('env', 'CLOUDFLARE_AUTH_KEY') }}"
+      cloudflare_auth_email: "{{ lookup('env', 'CLOUDFLARE_AUTH_EMAIL') }}"
+      cloudflare_zone_id: "{{ lookup('env', 'CLOUDFLARE_ZONE_ID') }}"
+      cloudflared_argo_provision_enabled: true
+      cloudflared_tunnels:
+        - tunnel_name: app
+          tunnel_hostname: app.example.com
+          tunnel_upstream: 127.0.0.1:80
+    roles:
+      - ansible-cloudflared
+  ```
+
+include:
+  - "docs/variables.md"
+
+funded_by_cdr: true
+# Contributors to this project
+contributors:
+  - name: "Abel Luck"
+    gitlab: "abelxluck"
+    gravatar: 0f605397e0ead93a68e1be26dc26481a

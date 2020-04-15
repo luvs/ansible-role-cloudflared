@@ -1,0 +1,14 @@
+[Unit]
+Description=Argo Tunnel (%I)
+After=syslog.target network-online.target
+
+[Service]
+Type=notify
+User=cloudflared
+ExecStart=/usr/local/bin/cloudflared --config /etc/cloudflared/%i.yml --no-autoupdate
+Restart=always
+RestartSec=5
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,23 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    cloudflared_tunnels:
+      - tunnel_name: cloudflaredtest
+        tunnel_hostname: cloudflaredtest.keanu.im
+        tunnel_upstream: 127.0.0.1:80
+  pre_tasks:
+    - name: Update apt cache.
+      apt:
+        update_cache: true
+        cache_valid_time: 600
+    - name: install dummy http server
+      apt:
+        name: nginx
+    - name: start dummy http server
+      service:
+        name: nginx
+        state: started
+  roles:
+    - role: ansible-cloudflared

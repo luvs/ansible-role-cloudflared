@@ -1,0 +1,177 @@
+---
+- name: Get names of expected cert files
+  set_fact:
+    expected_cert_files: "{{ cloudflared_tunnels | collect_pem_files }}"
+    expected_cert_files_by_name: "{{ cloudflared_tunnels | collect_pem_files_by_name}}"
+
+- name: Check if cert files exist
+  stat:
+    path: "{{ item }}"
+  register: pems_stat
+  with_items: "{{ expected_cert_files }}"
+
+- name: Combine output
+  set_fact:
+    expected_cert_files_exist: "{{ pems_stat.results | reduce_stat_exists }}"
+
+- name: download cloudflared deb
+  get_url:
+    url: "{{ cloudflared_base_url }}{{ cloudflared_amd64_apt }}"
+    dest: "/tmp/{{ cloudflared_amd64_apt }}"
+  notify: restart cloudflared
+
+- name: Install cloudflared .deb package
+  apt:
+    deb: "/tmp/{{ cloudflared_amd64_apt }}"
+    state: present
+  register: pkg_mgr_output
+  notify: restart cloudflared
+
+- name: Create cloudflared user
+  user:
+    name: cloudflared
+    system: true
+    state: present
+    create_home: false
+    groups: adm
+    append: true
+    shell: /usr/sbin/nologin
+  notify: restart cloudflared
+
+- name: Create Cloudflare log directory
+  file:
+    path: /var/log/cloudflared
+    state: directory
+    owner: cloudflared
+    group: cloudflared
+    mode: 0700
+  notify: restart cloudflared
+
+- name: Create /etc/cloudflared
+  file:
+    path: /etc/cloudflared/
+    state: directory
+    recurse: true
+    mode: u=rwX,g=,o=
+    owner: cloudflared
+    group: cloudflared
+  notify: restart cloudflared
+
+- name: Set credentials hash to determine if we need to re-gen the certs
+  template:
+    src: credentials-hash.j2
+    dest: /etc/cloudflared/credentials-hash
+    owner: root
+    group: root
+    mode: 0600
+  register: cf_credentials
+  notify: restart cloudflared
+  when: cloudflared_argo_provision_enabled
+
+- set_fact:
+    provision_certs: "{{ cloudflared_argo_provision_enabled and (not expected_cert_files_exist or cf_credentials.changed) }}"
+  when: cloudflared_argo_provision_enabled
+
+- set_fact:
+    provision_certs: false
+  when: not cloudflared_argo_provision_enabled
+
+- name: provision script dep | jq
+  apt:
+    name: jq
+    state: present
+  register: jq_installed
+  when: provision_certs | bool
+
+- name: provision script dep | openssl
+  apt:
+    name: openssl
+    state: present
+  register: openssl_installed
+  when: provision_certs | bool
+
+- name: provision script dep | curl
+  apt:
+    name: curl
+    state: present
+  register: curl_installed
+  when: provision_certs | bool
+
+- name: Provision certs
+  script: >-
+    provision-argo-cert.sh
+    {{ cloudflare_origin_ca_key }}
+    {{ cloudflare_auth_key }}
+    {{ cloudflare_auth_email }}
+    {{ cloudflare_zone_id }}
+    '["{{ item.tunnel_hostname }}"]'
+    /etc/cloudflared/{{ item.tunnel_name }}.pem
+  args:
+    creates: /etc/cloudflared/{{ item.tunnel_name }}.pem
+    executable: /bin/bash
+  notify: restart cloudflared
+  with_items: "{{ cloudflared_tunnels }}"
+  when: provision_certs | bool
+
+- name: provision script dep | jq remove
+  apt:
+    name: jq
+    state: absent
+  when: provision_certs and jq_installed.changed
+
+- name: provision script dep | openssl remove
+  apt:
+    name: openssl
+    state: absent
+  when: provision_certs and openssl_installed.changed
+
+- name: provision script dep | curl remove
+  apt:
+    name: curl
+    state: absent
+  when: provision_certs and curl_installed.changed
+
+- name: Set perms on /etc/cloudflared
+  file:
+    path: /etc/cloudflared/
+    state: directory
+    recurse: true
+    mode: u=rwX,g=,o=
+    owner: cloudflared
+    group: cloudflared
+  notify: restart cloudflared
+
+- name: Template cloudflared service file
+  template:
+    src: cloudflared@.service.j2
+    dest: /etc/systemd/system/cloudflared@.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart cloudflared
+
+- name: Create cloudflared config
+  template:
+    src: templates/cloudflared-config.j2
+    dest: /etc/cloudflared/{{ item.tunnel_name }}.yml
+    owner: cloudflared
+    group: cloudflared
+    mode: 0600
+  notify: restart cloudflared
+  with_items: "{{ cloudflared_tunnels }}"
+
+- name: Check if cert files exist again
+  stat:
+    path: "{{ item }}"
+  register: pems_stat_again
+  with_items: "{{ expected_cert_files }}"
+
+- name: If cert files don't exist, don't start the service
+  set_fact:
+    expected_cert_files_exist: "{{ pems_stat_again.results | reduce_stat_exists }}"
+    expected_cert_files_exist_by_name: "{{ pems_stat_again.results | reduce_stat_exists_by_name }}"
+- debug:
+    var: expected_cert_files_exist_by_name
+
+- name: Flush handlers
+  meta: flush_handlers
