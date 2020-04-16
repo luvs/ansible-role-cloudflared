@@ -1,4 +1,16 @@
 ---
+- name: Verify inputs are not empty
+  fail:
+    msg: variable "{{ item }}" is empty!
+  with_items:
+    - cloudflare_origin_ca_key
+    - cloudflare_auth_key
+    - cloudflare_auth_email
+    - cloudflare_zone_id
+  when:
+    - cloudflared_argo_provision_enabled
+    - "{{ item }} | trim | length == 0"
+
 - name: Get names of expected cert files
   set_fact:
     expected_cert_files: "{{ cloudflared_tunnels | collect_pem_files }}"
