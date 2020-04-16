@@ -2,7 +2,7 @@
 - name: Get names of expected cert files
   set_fact:
     expected_cert_files: "{{ cloudflared_tunnels | collect_pem_files }}"
-    expected_cert_files_by_name: "{{ cloudflared_tunnels | collect_pem_files_by_name}}"
+    expected_cert_files_by_name: "{{ cloudflared_tunnels | collect_pem_files_by_name }}"
 
 - name: Check if cert files exist
   stat:
@@ -61,18 +61,20 @@
   template:
     src: credentials-hash.j2
     dest: /etc/cloudflared/credentials-hash
-    owner: root
-    group: root
+    owner: cloudflared
+    group: cloudflared
     mode: 0600
   register: cf_credentials
   notify: restart cloudflared
   when: cloudflared_argo_provision_enabled
 
-- set_fact:
+- name: Set provision certs var
+  set_fact:
     provision_certs: "{{ cloudflared_argo_provision_enabled and (not expected_cert_files_exist or cf_credentials.changed) }}"
   when: cloudflared_argo_provision_enabled
 
-- set_fact:
+- name: Set provision certs var
+  set_fact:
     provision_certs: false
   when: not cloudflared_argo_provision_enabled
 
@@ -113,19 +115,19 @@
   with_items: "{{ cloudflared_tunnels }}"
   when: provision_certs | bool
 
-- name: provision script dep | jq remove
+- name: provision script dep | jq remove # noqa 503
   apt:
     name: jq
     state: absent
   when: provision_certs and jq_installed.changed
 
-- name: provision script dep | openssl remove
+- name: provision script dep | openssl remove # noqa 503
   apt:
     name: openssl
     state: absent
   when: provision_certs and openssl_installed.changed
 
-- name: provision script dep | curl remove
+- name: provision script dep | curl remove # noqa 503
   apt:
     name: curl
     state: absent
