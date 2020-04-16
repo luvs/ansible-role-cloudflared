@@ -5,8 +5,10 @@ cloudflared_base_url: "https://bin.equinox.io/c/VdrWdbjqyF/"
 cloudflared_amd64_apt: "cloudflared-stable-linux-amd64.deb"
 # @var cloudflared_bin_location: /usr/local/bin # the location the cloudflared binary will be placed
 cloudflared_bin_location: /usr/local/bin
-# @var cloudflared_enable_service: true # whether the cloudflared argo tunnel service will be started
+# @var cloudflared_enable_service: true # whether the cloudflared argo tunnel service will be enabled
 cloudflared_enable_service: true
+# @var cloudflared_start_service: started # the cloudflared argo tunnel service's state (started, stopped, restarted)
+cloudflared_service_state: started
 # @var cloudflared_tunnels: [] # the tunnels to create
 cloudflared_tunnels: []
 # @example #

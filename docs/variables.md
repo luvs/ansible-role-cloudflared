@@ -12,7 +12,11 @@
 
 
 
-* `cloudflared_enable_service`: `true` - whether the cloudflared argo tunnel service will be started
+* `cloudflared_enable_service`: `true` - whether the cloudflared argo tunnel service will be enabled
+
+
+
+* `cloudflared_start_service`: `started` - the cloudflared argo tunnel service's state (started, stopped, restarted)
 
 
 

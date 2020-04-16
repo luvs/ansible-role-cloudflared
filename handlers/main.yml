@@ -2,7 +2,7 @@
 - name: restart cloudflared
   systemd:
     name: cloudflared@{{ item.tunnel_name }}
-    state: "{{ expected_cert_files_exist_by_name[item.tunnel_name] | ternary('started','stopped') }}"
+    state: "{{ expected_cert_files_exist_by_name[item.tunnel_name] | ternary(cloudflared_service_state, 'stopped') }}"
     enabled: true
     daemon_reload: true
   with_items: "{{ cloudflared_tunnels }}"
