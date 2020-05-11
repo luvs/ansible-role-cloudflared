@@ -25,5 +25,5 @@ n/a
 
 n/a
 
-[Unreleased]: https://gitlab.com/guardianproject-ops/ansible-ntp/compare/0.1.0...HEAD
-[0.1.0]: https://gitlab.com/guardianproject-ops/ansible-ntp/tag/0.1.0
+[Unreleased]: https://gitlab.com/guardianproject-ops/ansible-ntp/compare/0.1.0...master
+[0.1.0]: https://gitlab.com/guardianproject-ops/ansible-ntp/-/tags/0.1.0
