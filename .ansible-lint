@@ -1,0 +1,5 @@
+exclude_paths:
+  - molecule
+skip_list:
+  - 204
+  - 106

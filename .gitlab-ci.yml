@@ -1,6 +1,4 @@
 ---
-image: registry.gitlab.com/guardianproject-ops/docker-docker-molecule:latest
-
 variables:
   DOCKER_HOST: tcp://docker:2375
 
@@ -18,7 +16,15 @@ stages:
     - molecule --version
     - molecule test
 
-molecule_debian10:
+molecule_debian10_ansible29:
+  image: registry.gitlab.com/guardianproject-ops/docker-docker-molecule:latest-2.9
+  stage: test
+  <<: *molecule
+  variables:
+    MOLECULE_DISTRO: debian10
+
+molecule_debian10_ansible210:
+  image: registry.gitlab.com/guardianproject-ops/docker-docker-molecule:latest-2.10
   stage: test
   <<: *molecule
   variables:
