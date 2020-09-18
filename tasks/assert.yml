@@ -1,0 +1,31 @@
+---
+- name: Verify inputs are not empty
+  when: cloudflared_argo_provision_enabled
+  block:
+    - name: test if cloudflare_origin_ca_key is set correctly
+      assert:
+        that:
+          - cloudflare_origin_ca_key is defined
+          - cloudflare_origin_ca_key | length > 0
+        quiet: true
+
+    - name: test if cloudflare_auth_key is set correctly
+      assert:
+        that:
+          - cloudflare_auth_key is defined
+          - cloudflare_auth_key | length > 0
+        quiet: true
+
+    - name: test if cloudflare_auth_email is set correctly
+      assert:
+        that:
+          - cloudflare_auth_email is defined
+          - cloudflare_auth_email | length > 0
+        quiet: true
+
+    - name: test if cloudflare_zone_id is set correctly
+      assert:
+        that:
+          - cloudflare_zone_id is defined
+          - cloudflare_zone_id | length > 0
+        quiet: true
