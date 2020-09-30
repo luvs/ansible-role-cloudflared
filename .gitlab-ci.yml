@@ -13,6 +13,7 @@ stages:
     - docker version
     - python3 -V
     - ansible --version
+    - ansible-lint --version
     - molecule --version
     - molecule test
 
