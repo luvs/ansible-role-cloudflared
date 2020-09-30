@@ -24,9 +24,10 @@
 
 
   cloudflared_tunnels:
-   - tunnel_name: foo
-     tunnel_hostname: yourapp.foo.com
-     tunnel_upstream: 127.0.0.1:8001
+    - tunnel_name: foo
+      tunnel_hostname: yourapp.foo.com
+      tunnel_upstream: 127.0.0.1:8001
+      metrics_bind: 0.0.0.0:9300 (default is 'localhost:' which binds to a random port, not very useful)
 
 * `cloudflared_argo_provision_enabled`: `false` - Whether to provision the argo cert automatically
 

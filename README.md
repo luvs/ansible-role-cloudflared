@@ -63,6 +63,7 @@ It's free and open source made available under the the [GNU Affero General Publi
 
 
 
+
 ## Requirements
 
 This role only supports Debian hosts.
@@ -84,6 +85,7 @@ resulting cert into position in `/etc/cloudflared/app.cert`
       - tunnel_name: app
         tunnel_hostname: app.example.com
         tunnel_upstream: 127.0.0.1:80
+        metrics_bind: 0.0.0.0:9300
   roles:
     - ansible-cloudflared
 ```
@@ -139,9 +141,10 @@ This automatically provisions the cert but requires root creds :yikes:
 
 
   cloudflared_tunnels:
-   - tunnel_name: foo
-     tunnel_hostname: yourapp.foo.com
-     tunnel_upstream: 127.0.0.1:8001
+    - tunnel_name: foo
+      tunnel_hostname: yourapp.foo.com
+      tunnel_upstream: 127.0.0.1:8001
+      metrics_bind: 0.0.0.0:9300 (default is 'localhost:' which binds to a random port, not very useful)
 
 * `cloudflared_argo_provision_enabled`: `false` - Whether to provision the argo cert automatically
 
@@ -247,6 +250,7 @@ projects][gitlab] and [non-ops projects][nonops], follow us on
 
 
 
+
 **This project is also funded by the [Center for Digital Resilience][cdr].**
 
 [<img src="https://gitlab.com/digiresilience/web/digiresilience.org/-/raw/master/assets/images/cdr-logo-gray-256w.png"/>][website]
@@ -255,6 +259,7 @@ CDR builds [resilient systems][cdr-tech] to keep civil society safe online and e
 activists to regain civic space. We offer a variety of digital wellness
 services through local partner organizations. Interested? [Email
 us][cdr-email].
+
 
 
 

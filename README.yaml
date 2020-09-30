@@ -38,6 +38,7 @@ usage: |-
         - tunnel_name: app
           tunnel_hostname: app.example.com
           tunnel_upstream: 127.0.0.1:80
+          metrics_bind: 0.0.0.0:9300
     roles:
       - ansible-cloudflared
   ```
