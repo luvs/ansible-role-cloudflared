@@ -1,15 +1,13 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### [0.1.2](https://gitlab.com/guardianproject-ops/ansible-cloudflared/compare/v0.1.1...v0.1.2) (2020-09-30)
 
-## [Unreleased]
 
-### Added
-### Changed
-### Removed
+### Features
+
+* expose cloudflared metrics ([8b419a1](https://gitlab.com/guardianproject-ops/ansible-cloudflared/commit/8b419a104249fbef3b91e093faad4869bb322b39))
 
 ## [0.1.0] - 2020-04-17
 
