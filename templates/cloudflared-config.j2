@@ -1,5 +1,5 @@
 hostname: "{{ item.tunnel_hostname }}"
-url: http://{{ item.tunnel_upstream }}
+url: {{ item.tunnel_upstream }}
 logfile: /var/log/cloudflared/{{ item.tunnel_name }}.log
 origincert: /etc/cloudflared/{{ item.tunnel_name }}.pem
 metrics: {{ item.metrics_bind | default("localhost:") }}
